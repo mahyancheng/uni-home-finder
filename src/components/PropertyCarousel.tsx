@@ -2,7 +2,13 @@
 import React from 'react';
 import { Property } from '@/lib/types';
 import PropertyCard from './PropertyCard';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 
 interface PropertyCarouselProps {
   properties: Property[];
@@ -19,19 +25,31 @@ const PropertyCarousel: React.FC<PropertyCarouselProps> = ({
 
   return (
     <div className="w-full my-4">
-      <h3 className="text-sm font-medium text-gray-500 mb-2">Found {properties.length} properties:</h3>
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex space-x-4 p-1 pb-4">
-          {properties.map((property) => (
-            <div key={property.id} className="w-[280px] shrink-0">
-              <PropertyCard 
-                property={property} 
-                onClick={() => onPropertyClick(property)} 
-              />
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+      <h3 className="text-sm font-medium text-gray-500 mb-3">Found {properties.length} properties:</h3>
+      <div className="relative">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: properties.length > 3,
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {properties.map((property) => (
+              <CarouselItem key={property.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                <div className="p-1">
+                  <PropertyCard
+                    property={property}
+                    onClick={() => onPropertyClick(property)}
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="absolute -left-4 top-1/2" />
+          <CarouselNext className="absolute -right-4 top-1/2" />
+        </Carousel>
+      </div>
     </div>
   );
 };

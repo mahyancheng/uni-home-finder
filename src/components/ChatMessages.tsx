@@ -43,34 +43,46 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, onPropertyClick }
                   </div>
                 </Avatar>
               )}
-              <div className="space-y-2">
+              <div className="space-y-2 w-full">
                 <div className="whitespace-pre-wrap">{message.content}</div>
                 
-                {/* Show property carousel if message has properties and more than one */}
-                {message.properties && message.properties.length > 1 && (
-                  <PropertyCarousel 
-                    properties={message.properties}
-                    onPropertyClick={(property) => onPropertyClick(property.property_name)}
-                  />
-                )}
-                
-                {/* Show property detail if message has exactly one property */}
-                {message.properties && message.properties.length === 1 && (
-                  <PropertyDetail property={message.properties[0]} />
+                {message.role === 'user' && (
+                  <Avatar className="h-8 w-8 ml-2">
+                    <div className="bg-gray-500 h-full w-full flex items-center justify-center text-white text-xs font-bold">
+                      You
+                    </div>
+                  </Avatar>
                 )}
               </div>
-              
-              {message.role === 'user' && (
-                <Avatar className="h-8 w-8 ml-2">
-                  <div className="bg-gray-500 h-full w-full flex items-center justify-center text-white text-xs font-bold">
-                    You
-                  </div>
-                </Avatar>
-              )}
             </div>
           </div>
         </div>
       ))}
+      
+      {/* Display properties carousel in a separate section */}
+      {messages.some(msg => msg.properties && msg.properties.length > 1) && (
+        <div className="w-full bg-white rounded-lg shadow p-4 mt-4">
+          <h3 className="text-lg font-semibold text-blue-700 mb-3">Available Properties</h3>
+          {messages.filter(msg => msg.properties && msg.properties.length > 1).slice(-1).map((message) => (
+            <PropertyCarousel 
+              key={message.id}
+              properties={message.properties!}
+              onPropertyClick={(property) => onPropertyClick(property.property_name)}
+            />
+          ))}
+        </div>
+      )}
+      
+      {/* Show property detail if message has exactly one property */}
+      {messages.some(msg => msg.properties && msg.properties.length === 1) && (
+        <div className="w-full bg-white rounded-lg shadow p-4 mt-4">
+          <h3 className="text-lg font-semibold text-blue-700 mb-3">Property Details</h3>
+          {messages.filter(msg => msg.properties && msg.properties.length === 1).slice(-1).map((message) => (
+            <PropertyDetail key={message.id} property={message.properties![0]} />
+          ))}
+        </div>
+      )}
+      
       <div ref={messagesEndRef} />
     </div>
   );
