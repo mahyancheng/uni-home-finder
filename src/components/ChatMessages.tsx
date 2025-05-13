@@ -24,7 +24,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, onPropertyClick }
   return (
     <div className="flex flex-col space-y-4 p-4 overflow-y-auto">
       {messages.map((message, index) => (
-        <React.Fragment key={message.id}>
+        <div key={message.id}>
           <div
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
@@ -71,7 +71,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, onPropertyClick }
               )}
             </div>
           )}
-        </React.Fragment>
+        </div>
       ))}
       
       <div ref={messagesEndRef} />
