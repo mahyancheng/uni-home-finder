@@ -21,6 +21,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, onPropertyClick }
     return null;
   }
 
+  // Find the most recent message that has properties
+  const messageWithProperties = [...messages].reverse().find(msg => msg.properties && msg.properties.length > 0);
+
   return (
     <div className="flex flex-col space-y-4 p-4 overflow-y-auto">
       {messages.map((message) => (
@@ -59,27 +62,23 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, onPropertyClick }
         </div>
       ))}
       
-      {/* Display properties carousel in a separate section */}
-      {messages.some(msg => msg.properties && msg.properties.length > 1) && (
+      {/* Display properties carousel if any message has properties */}
+      {messageWithProperties && messageWithProperties.properties && messageWithProperties.properties.length > 0 && (
         <div className="w-full bg-white rounded-lg shadow p-4 mt-4">
-          <h3 className="text-lg font-semibold text-blue-700 mb-3">Available Properties</h3>
-          {messages.filter(msg => msg.properties && msg.properties.length > 1).slice(-1).map((message) => (
+          <h3 className="text-lg font-semibold text-blue-700 mb-3">
+            {messageWithProperties.properties.length > 1 
+              ? "Available Properties" 
+              : "Property Details"}
+          </h3>
+          
+          {messageWithProperties.properties.length > 1 ? (
             <PropertyCarousel 
-              key={message.id}
-              properties={message.properties!}
+              properties={messageWithProperties.properties}
               onPropertyClick={(property) => onPropertyClick(property.property_name)}
             />
-          ))}
-        </div>
-      )}
-      
-      {/* Show property detail if message has exactly one property */}
-      {messages.some(msg => msg.properties && msg.properties.length === 1) && (
-        <div className="w-full bg-white rounded-lg shadow p-4 mt-4">
-          <h3 className="text-lg font-semibold text-blue-700 mb-3">Property Details</h3>
-          {messages.filter(msg => msg.properties && msg.properties.length === 1).slice(-1).map((message) => (
-            <PropertyDetail key={message.id} property={message.properties![0]} />
-          ))}
+          ) : (
+            <PropertyDetail property={messageWithProperties.properties[0]} />
+          )}
         </div>
       )}
       

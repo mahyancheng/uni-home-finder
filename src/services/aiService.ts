@@ -1,4 +1,3 @@
-
 import { Tool, Message, ToolCall, PropertySearchParams } from '@/lib/types';
 import { searchProperties, getPropertyDetails } from './propertyService';
 
@@ -108,7 +107,9 @@ export async function sendMessageToOpenRouter(
     let properties = [];
     
     if (data.choices[0].message.tool_calls) {
+      console.log('Processing tool calls:', data.choices[0].message.tool_calls);
       properties = await handleToolCalls(data.choices[0].message.tool_calls);
+      console.log('Properties after tool calls:', properties);
     }
 
     // Create response message
@@ -120,6 +121,7 @@ export async function sendMessageToOpenRouter(
       properties: properties.length > 0 ? properties : undefined
     };
 
+    console.log('Final response message:', responseMessage);
     return { responseMessage, properties };
   } catch (error) {
     console.error('Error sending message to OpenRouter:', error);
@@ -139,18 +141,24 @@ async function handleToolCalls(toolCalls: ToolCall[]): Promise<any[]> {
   const results = [];
 
   for (const toolCall of toolCalls) {
-    if (toolCall.function.name === 'search_relevant_property') {
+    if (toolCall.function && toolCall.function.name === 'search_relevant_property') {
       try {
         const args = JSON.parse(toolCall.function.arguments) as PropertySearchParams;
+        console.log('Searching properties with args:', args);
         const properties = await searchProperties(args);
-        results.push(...properties);
+        console.log('Found properties:', properties);
+        if (properties.length > 0) {
+          results.push(...properties);
+        }
       } catch (error) {
         console.error('Error in search_relevant_property:', error);
       }
-    } else if (toolCall.function.name === 'detailed_property_search') {
+    } else if (toolCall.function && toolCall.function.name === 'detailed_property_search') {
       try {
         const args = JSON.parse(toolCall.function.arguments);
+        console.log('Getting property details for:', args.property_name);
         const property = await getPropertyDetails(args.property_name);
+        console.log('Found property details:', property);
         if (property) {
           results.push(property);
         }
@@ -160,5 +168,6 @@ async function handleToolCalls(toolCalls: ToolCall[]): Promise<any[]> {
     }
   }
 
+  console.log('Returning results from handleToolCalls:', results);
   return results;
 }

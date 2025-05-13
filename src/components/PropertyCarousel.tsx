@@ -46,8 +46,12 @@ const PropertyCarousel: React.FC<PropertyCarouselProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute -left-4 top-1/2" />
-          <CarouselNext className="absolute -right-4 top-1/2" />
+          {properties.length > 1 && (
+            <>
+              <CarouselPrevious className="absolute -left-4 top-1/2" />
+              <CarouselNext className="absolute -right-4 top-1/2" />
+            </>
+          )}
         </Carousel>
       </div>
     </div>

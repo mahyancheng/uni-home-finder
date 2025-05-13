@@ -39,6 +39,9 @@ const ChatContainer: React.FC = () => {
       
       // Add AI response to state
       setMessages((prev) => [...prev, responseMessage]);
+      
+      // Log response message for debugging
+      console.log('Response message with properties:', responseMessage);
     } catch (error) {
       console.error('Error sending message:', error);
       
