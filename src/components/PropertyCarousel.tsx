@@ -20,12 +20,17 @@ const PropertyCarousel: React.FC<PropertyCarouselProps> = ({
   onPropertyClick,
 }) => {
   if (!properties || properties.length === 0) {
+    console.log("No properties to display in carousel");
     return null;
   }
 
+  console.log("Rendering PropertyCarousel with properties:", properties);
+
   return (
-    <div className="w-full my-4">
-      <h3 className="text-sm font-medium text-gray-500 mb-3">Found {properties.length} properties:</h3>
+    <div className="w-full my-2">
+      <h3 className="text-lg font-semibold text-blue-700 mb-3">
+        Available Properties ({properties.length})
+      </h3>
       <div className="relative">
         <Carousel
           opts={{

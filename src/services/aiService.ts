@@ -1,3 +1,4 @@
+
 import { Tool, Message, ToolCall, PropertySearchParams } from '@/lib/types';
 import { searchProperties, getPropertyDetails } from './propertyService';
 
@@ -121,7 +122,7 @@ export async function sendMessageToOpenRouter(
       properties: properties.length > 0 ? properties : undefined
     };
 
-    console.log('Final response message:', responseMessage);
+    console.log('Final response message with properties:', responseMessage);
     return { responseMessage, properties };
   } catch (error) {
     console.error('Error sending message to OpenRouter:', error);
